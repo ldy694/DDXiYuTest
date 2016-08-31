@@ -15,7 +15,7 @@ class BListViewDemo extends Component {
     render() {
         return (
             <MainView/>
-            // <MyList/>
+             // <MyList/>
         );
     }
 

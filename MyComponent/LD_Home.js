@@ -8,10 +8,13 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
+    TextInput,
 } from 'react-native';
 import Home_detailsView_dd from './Home_detailsView_dd'
 import Dimensions from 'Dimensions';
 var {width, height} = Dimensions.get('window');
+var dataBlob = {}, sectionIDs = [], rowIDs = [];
+
 class MyHomeView extends Component {
 
     constructor(props) {
@@ -19,6 +22,7 @@ class MyHomeView extends Component {
         var getDataBlob = (dataBlob, sectionID)=>dataBlob[sectionID];
         var getRowData = (dataBlob, sectionID, rowID)=>dataBlob[sectionID + ':' + rowID];
         this.state = {
+            banner: 'http://pb.ehsy.com/categoryRecom',
             homePageSku: 'http://pb.ehsy.com/homePageSku',
             homeProductArr: [],
             dataSource: new ListView.DataSource({
@@ -32,18 +36,48 @@ class MyHomeView extends Component {
 
     render() {
         return (
-            <View style={styles.BigViewStyles}>
+            <View style={styles.bigViewStyles}>
+                {this.creatNavigatorView()}
                 <ListView
                     dataSource={this.state.dataSource}
                     renderRow={(rowData)=>this.renderRowView(rowData)}
-                    renderSectionHeader={()=><View><Text>就是测试</Text></View>}
                     contentContainerStyle={styles.upListViewStyles}
                 />
             </View>
         )
     }
-    renderRowView(rowData){
-        return <TouchableOpacity onPress={()=>this.pushTheDetails()}><View><Text>{rowData.productName}</Text></View></TouchableOpacity>
+
+    creatNavigatorView() {
+        return (
+            <View style={styles.topNavTopStyles}>
+                <View style={styles.topNavStyles}>
+                    <View style={styles.topNavLeftStyles}>
+                        <Image source={require('../img/home_left_icon.png')} style={styles.navLeftIconStyles}/>
+                        <Text style={styles.topNavLestTextStyles}>上海</Text>
+                    </View>
+                    <TextInput
+                        style={styles.topNavTextInputStyles}
+                        placeholder="西域帮你找SKU"
+                    />
+                    <View style={styles.topNavRightStyles}>
+                        <Image source={require('../img/home_left_icon.png')} style={styles.navLeftIconStyles}/>
+                        <Text style={styles.topNavLestTextStyles}>上海</Text>
+                    </View>
+                </View>
+            </View>
+        )
+    }
+
+    renderRowView(rowData) {
+        return (
+            <TouchableOpacity style={styles.productCellStyles}
+                              onPress={()=>this.pushTheDetails()}>
+                <Image source={{uri: rowData.pictureUrl}} style={styles.productCellImageStyles}/>
+                <Text style={styles.cellTitleStyles} numberOfLines={1}>{rowData.productName}</Text>
+                <Text style={styles.cellNowPriceStyles}>{rowData.salePrice}</Text>
+                <Text style={styles.cellOldPriceStyles}>{rowData.marketPrice}</Text>
+            </TouchableOpacity>
+        )
     }
 
     pushTheDetails() {
@@ -69,21 +103,42 @@ class MyHomeView extends Component {
             .then((data) => data.json())
             .then((jsonData) => {
                 var dataArr = jsonData.data;
-                var dataBlob = {}, sectionIDs = [], rowIDs = [];
                 dataBlob[0] = ' ';
                 sectionIDs.push(0);
                 rowIDs[0] = [];
                 for (var i = 0; i < dataArr.length; i++) {
                     rowIDs[0].push(i);
-                    dataBlob[0+':'+i] = dataArr[i];
+                    dataBlob[0 + ':' + i] = dataArr[i];
                 }
+
                 this.setState({
                     homeProductArr: jsonData.data,
-                    dataSource:this.state.dataSource.cloneWithRowsAndSections(dataBlob,sectionIDs,rowIDs),
+                    dataSource: this.state.dataSource.cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs),
                 })
             })
             .catch((error) => {
-                console.error(error);
+                // console.error(error);
+                alert(error);
+            })
+        fetch(this.state.banner, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                ecomId:0,
+                type:0,
+            })
+        })
+            .then((data)=>data.json())
+            .then((jsonData)=> {
+                var banArr = jsonData.data.picurls.home1;
+                console.log(banArr[0].imgUrl);
+            })
+            .catch((error)=> {
+                alert(error);
+                // console.error(error);
             })
     }
 
@@ -91,22 +146,79 @@ class MyHomeView extends Component {
 }
 const styles = StyleSheet.create({
     bigViewStyles: {
-        flex:1,
-        // position:'absolute',
-        // marginTop: 0,
-        // marginLeft:0,
-        // marginRight:0,
-        // marginBottom:0,
-        backgroundColor:'yellow',
+        flex: 1,
     },
-    upListViewStyles:{
+    topNavLeftStyles: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    topNavLestTextStyles: {
+        fontSize: 11,
+        color: '#ffffff'
+    },
+    navLeftIconStyles: {
+        width: 30,
+        height: 30,
+
+    },
+    topNavTextInputStyles: {
+        width: width - 100,
+        height: 30,
+        marginTop: 10,
+        textAlign: 'center',
+        backgroundColor: '#ffffff',
+        borderRadius: 15,
+    },
+    topNavRightStyles: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    topNavTopStyles: {
+        backgroundColor: 'green',
+    },
+    topNavStyles: {
+        marginTop: 20,
+        height: 44,
+        backgroundColor: 'green',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+
+    },
+    upListViewStyles: {
+        // flex: 1,
         // width: width,
-        // height: 200,
-        flex:1,
-        backgroundColor:'green',
-        flexDirection:'column',
-        flexWrap:'wrap'
-    }
+        // height: height,
+        backgroundColor: '#f6f6f6',
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    },
+    productCellStyles: {
+        width: (width - 15) / 2.0,
+        height: (width - 15) / 2.0 + 50,
+        backgroundColor: '#ffffff',
+        marginTop: 5,
+        marginLeft: 5,
+
+    },
+    productCellImageStyles: {
+        width: (width - 15) / 2.0,
+        height: (width - 15) / 2.0,
+
+    },
+    cellTitleStyles: {
+        fontSize: 14,
+        color: '#333333',
+        marginLeft: 5,
+    },
+    cellNowPriceStyles: {
+        color: 'red',
+        fontSize: 12,
+    },
+    cellOldPriceStyles: {
+        color: '#f6f6f6',
+        marginBottom: 5,
+    },
 })
 
 export default MyHomeView

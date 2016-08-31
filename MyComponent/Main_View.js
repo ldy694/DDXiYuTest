@@ -43,9 +43,10 @@ export default class Main_View extends Component {
     render() {
         return (
             <TabNavigator
-                tabBarShadowStyle={{backgroundColor: 'gray'}}
+                tabBarShadowStyle={[{backgroundColor: 'gray'}, styles.screenStyles]}
             >
                 <TabNavigator.Item
+                    ref='tabbb'
                     title="首页"
                     titleStyle={{color: '#333333'}}
                     selectedTitleStyle={{color: 'green'}}
@@ -57,7 +58,8 @@ export default class Main_View extends Component {
                     selected={this.state.selectedTab === 'home'}
                 >
                     <Navigator
-                        sceneStyle={{flex:1}}
+                        ref='navvv'
+                        sceneStyle={{flex: 1}}
                         initialRoute={{name: '首页', component: Home}}
                         configureScene={(route)=> {
                             return Navigator.SceneConfigs.PushFromRight;
@@ -65,27 +67,7 @@ export default class Main_View extends Component {
                         renderScene={(route, navigator)=> {
                             let Comm = route.component;
                             return (
-                                <View>
-                                    <View style={{
-                                        height: 64,
-                                        backgroundColor: '#f6f6f6',
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: 'red',
-                                        flexDirection: 'row',
-                                        justifyContent: 'flex-start',
-                                        alignItems: 'flex-end'
-                                    }}>
-                                        <View refreshing="leftView" style={{
-                                            backgroundColor: 'red',
-                                            width: 30,
-                                            height: 30,
-                                            marginLeft: 10,
-                                            marginBottom: 10
-                                        }}/>
-                                    </View>
-                                    <Comm {...route.params} navigator={navigator}
-                                          style={{width: width, height: height}}/>
-                                </View>
+                                    <Comm {...route.params} navigator={navigator} ref='uppp' />
                             )
                         }}
                     />
@@ -136,6 +118,12 @@ export default class Main_View extends Component {
         );
     }
 
+    componentDidMount() {
+        var NoView = this.refs.biggg
+
+        console.log('来来来')
+    }
+
     creatTheTabNavigatorItem(title, imgStr, selectedImgStr, tabName, ControlView) {
         return (
             <TabNavigator.Item
@@ -154,6 +142,11 @@ export default class Main_View extends Component {
     }
 }
 const styles = StyleSheet.create({
+    screenStyles: {
+        // width: width,
+        // height: height-0,
+        // flex:1,
+    },
     iconSelectedStyles: {
         width: 25,
         height: 25,
