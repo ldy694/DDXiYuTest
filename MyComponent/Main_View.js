@@ -120,7 +120,6 @@ export default class Main_View extends Component {
 
     componentDidMount() {
         var NoView = this.refs.biggg
-
         console.log('来来来')
     }
 

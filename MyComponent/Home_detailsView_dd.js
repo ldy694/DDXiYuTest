@@ -21,7 +21,9 @@ class Home_detailsView_dd extends Component {
     constructor(props) {
         super(props);
         // 初始状态
-        this.state = {};
+        this.state = {
+            testName:'',
+        };
     }
 
     // 自定义方法
@@ -37,6 +39,7 @@ class Home_detailsView_dd extends Component {
                     onPress={()=>this.popNavigatorView()}
                 >
                     <Text>
+                        {this.state.testName}
                         Home_detailsView_dd
                     </Text>
                 </TouchableOpacity>
@@ -46,8 +49,12 @@ class Home_detailsView_dd extends Component {
     popNavigatorView(){
         this.props.navigator.pop()
     }
+    changeTheStateInfo(){
+
+    }
 
 }
+
 const styles = StyleSheet.create({
     bigViewStyles: {
         backgroundColor: 'green',
@@ -57,6 +64,9 @@ const styles = StyleSheet.create({
         alignItems:'center',
         width:width,
         height:height,
+    },
+    textStyles:{
+      backgroundColor:'red',
     }
 })
 

@@ -21,8 +21,17 @@ class MyHomeView extends Component {
         super(props);
         var getDataBlob = (dataBlob, sectionID)=>dataBlob[sectionID];
         var getRowData = (dataBlob, sectionID, rowID)=>dataBlob[sectionID + ':' + rowID];
+        var url = "http://pb.ehsy.com/categoryRecom";
+        var params = {recomId:0, type:0};
+        var paramsArray = [];
+        Object.keys(params).forEach(key => paramsArray.push(key + '=' + encodeURIComponent(params[key])))
+        if (url.search(/\?/) === -1) {
+            url += '?' + paramsArray.join('&')
+        } else {
+            url += '&' + paramsArray.join('&')
+        }
         this.state = {
-            banner: 'http://pb.ehsy.com/categoryRecom',
+            banner:url,
             homePageSku: 'http://pb.ehsy.com/homePageSku',
             homeProductArr: [],
             dataSource: new ListView.DataSource({
@@ -118,26 +127,16 @@ class MyHomeView extends Component {
             })
             .catch((error) => {
                 // console.error(error);
-                alert(error);
+                alert('报错'+error);
             })
-        fetch(this.state.banner, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                ecomId:0,
-                type:0,
-            })
-        })
+        fetch(this.state.banner)
             .then((data)=>data.json())
             .then((jsonData)=> {
-                var banArr = jsonData.data.picurls.home1;
-                console.log(banArr[0].imgUrl);
+                // var banArr = jsonData.data.picurls.home1;
+                console.log(jsonData);
             })
             .catch((error)=> {
-                alert(error);
+                alert('报错'+error);
                 // console.error(error);
             })
     }
