@@ -14,7 +14,7 @@ var {width, height} = Dimensions.get('window');
 
 class ScrollViewDDss extends Component {
     static defaultProps = ({
-        imageData:{},
+        imageData:[],
         testFun:''
     })
     // 构造
@@ -55,7 +55,7 @@ class ScrollViewDDss extends Component {
     scrollViewBeginDragDD(sc) {
         console.log('onScrollBeginDrag')
         if (this.props.testFun){
-            this.props.testFun(this.props.imageData.data[this.state.nowPage].title);
+            this.props.testFun('测试');
         }
     }
 
@@ -70,7 +70,7 @@ class ScrollViewDDss extends Component {
     startTimerInterval() {
 
         this.timer = setInterval(()=> {
-            var Imarr = this.props.imageData.data;
+            var Imarr = this.props.imageData;
             var pageNum = 0;
             if (this.state.nowPage >= Imarr.length - 1) {
                 pageNum = 0;
@@ -96,33 +96,14 @@ class ScrollViewDDss extends Component {
 
     createAllChildView() {
         var arr = [];
-        var imgArr = this.props.imageData.data
-        for (var i = 0; i < this.props.imageData.data.length; i++) {
-            var image = this.props.imageData.data[i].img;
-
-            var reqss;
-            switch (i) {
-                case 0:
-                    reqss = require('./img/img_01.png');
-                    break;
-                case 1:
-                    reqss = require('./img/img_02.png');
-                    break;
-                case 2:
-                    reqss = require('./img/img_03.png');
-                    break;
-                case 3:
-                    reqss = require('./img/img_04.png');
-                    break;
-                default:
-                    reqss = require('./img/img_05.png');
-                    break;
-            }
+        var imgArr = this.props.imageData
+        for (var i = 0; i < this.props.imageData.length; i++) {
+            var image = this.props.imageData[i].imgUrl;
             arr.push(
                 <Image
                     key={i}
                     style={styles.scrollviewChildImageStyles}
-                    source={reqss}
+                    source={{uri:image}}
                 />
             )
         }
@@ -131,7 +112,7 @@ class ScrollViewDDss extends Component {
 
     createNowChildViewPage() {
         var arr = [];
-        for (var i=0;i<this.props.imageData.data.length;i++) {
+        for (var i=0;i<this.props.imageData.length;i++) {
             this.state.nowPage === i ? (
                 arr.push(<Text key={i} style={[styles.nowNumTextStyles, {color: 'yellow'}]}>&bull;</Text>)
             ) : (

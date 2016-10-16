@@ -11,6 +11,7 @@ import {
     TextInput,
 } from 'react-native';
 import Home_detailsView_dd from './Home_detailsView_dd'
+import HeaderScrollView from './ScrollViewDD'
 import Dimensions from 'Dimensions';
 var {width, height} = Dimensions.get('window');
 var dataBlob = {}, sectionIDs = [], rowIDs = [];
@@ -22,16 +23,10 @@ class MyHomeView extends Component {
         var getDataBlob = (dataBlob, sectionID)=>dataBlob[sectionID];
         var getRowData = (dataBlob, sectionID, rowID)=>dataBlob[sectionID + ':' + rowID];
         var url = "http://pb.ehsy.com/categoryRecom";
-        var params = {recomId:0, type:0};
-        var paramsArray = [];
-        Object.keys(params).forEach(key => paramsArray.push(key + '=' + encodeURIComponent(params[key])))
-        if (url.search(/\?/) === -1) {
-            url += '?' + paramsArray.join('&')
-        } else {
-            url += '&' + paramsArray.join('&')
-        }
+        var params = {recomId:0,type:0};
+        url = this.changeTheDicParams(url,params);
         this.state = {
-            banner:url,
+            banner: url,
             homePageSku: 'http://pb.ehsy.com/homePageSku',
             homeProductArr: [],
             dataSource: new ListView.DataSource({
@@ -39,10 +34,20 @@ class MyHomeView extends Component {
                 getRowData: getRowData,
                 rowHasChanged: (r1, r2)=>r1 !== r2,
                 sectionHeaderHasChanged: (s1, s2)=>s1 !== s2,
-            })
+            }),
+            mainHeaderArr: [],
         };
     }
-
+    changeTheDicParams(url,params){
+        var paramsArray = [];
+        Object.keys(params).forEach(key => paramsArray.push(key + '=' + encodeURIComponent(params[key])))
+        if (url.search(/\?/) === -1) {
+            url += '?' + paramsArray.join('&')
+        } else {
+            url += '&' + paramsArray.join('&')
+        }
+        return url;
+    }
     render() {
         return (
             <View style={styles.bigViewStyles}>
@@ -51,6 +56,7 @@ class MyHomeView extends Component {
                     dataSource={this.state.dataSource}
                     renderRow={(rowData)=>this.renderRowView(rowData)}
                     contentContainerStyle={styles.upListViewStyles}
+                    renderHeader={()=>this.creatHeaderView()}
                 />
             </View>
         )
@@ -77,6 +83,18 @@ class MyHomeView extends Component {
         )
     }
 
+    creatHeaderView() {
+        return (
+            <View style={{backgroundColor:'#ff6e40',height:200,width:width}}></View>
+        );
+
+        // return (
+        //     <HeaderScrollView
+        //         imageData={this.state.mainHeaderArr}
+        //     />
+        // );
+    }
+
     renderRowView(rowData) {
         return (
             <TouchableOpacity style={styles.productCellStyles}
@@ -98,6 +116,7 @@ class MyHomeView extends Component {
 
     componentDidMount() {
         this.updateTheListView();
+
     }
 
     updateTheListView() {
@@ -127,16 +146,19 @@ class MyHomeView extends Component {
             })
             .catch((error) => {
                 // console.error(error);
-                alert('报错'+error);
+                alert(error);
             })
-        fetch(this.state.banner)
+        var temUrl = "http://pb.ehsy.com/brand/recommend";
+        var param = {type:1};
+        fetch(this.changeTheDicParams(temUrl,param))
             .then((data)=>data.json())
             .then((jsonData)=> {
-                // var banArr = jsonData.data.picurls.home1;
+                // var banArr = jsonData['data'];
+
                 console.log(jsonData);
             })
             .catch((error)=> {
-                alert('报错'+error);
+                alert('报错' + error);
                 // console.error(error);
             })
     }

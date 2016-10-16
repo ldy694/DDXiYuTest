@@ -59,12 +59,12 @@ export default class Main_View extends Component {
                 >
                     <Navigator
                         ref='navvv'
-                        sceneStyle={{flex: 1}}
-                        initialRoute={{name: '首页', component: Home}}
-                        configureScene={(route)=> {
+                        sceneStyle={{flex: 1}}//场景样式
+                        initialRoute={{name: '首页', component: Home}}//初始化场景
+                        configureScene={(route)=> {//配置场景
                             return Navigator.SceneConfigs.PushFromRight;
                         }}
-                        renderScene={(route, navigator)=> {
+                        renderScene={(route, navigator)=> {//进行场景
                             let Comm = route.component;
                             return (
                                     <Comm {...route.params} navigator={navigator} ref='uppp' />

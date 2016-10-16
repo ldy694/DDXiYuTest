@@ -46,6 +46,8 @@ class Home_detailsView_dd extends Component {
             </View>
         );
     }
+
+
     popNavigatorView(){
         this.props.navigator.pop()
     }

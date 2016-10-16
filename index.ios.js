@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 
 import MainView from './MyComponent/Main_View'
-import MyList from './myListViewClass'
 class BListViewDemo extends Component {
     // 渲染
     render() {
